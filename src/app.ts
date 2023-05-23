@@ -1,26 +1,18 @@
-class InvoiceItem {
-    public client: string;
-    private details: string;
-    readonly amount: number;
+import InvoiceItem from './classes/InvoiceItem.js'
+import ListTemplate from './classes/ListTemplate.js';
+import PaymentItem from './classes/PaymentItem.js'
+import HasFormatter from './interfaces/HasFormatter.js';
 
-    constructor(c:string, d:string, a:number){
-        this.client = c;
-        this.details = d;
-        this.amount = a;
-    }
+// let docOne:HasFormatter;
+// let docTwo:HasFormatter;
 
-    // can collapse everything above into the below constructor (this only works with the access modifiers)
-    // constructor(
-    //     readonly client:string;
-    //     private details:string;
-    //     public amount: number;
-    // ){}
+// docOne = new InvoiceItem('yoshi','web work', 250)
+// docTwo = new InvoiceItem('mario','plumming work', 200)
 
-    
-    format() {
-        return `${this.client} owes £${this.amount} for ${this.details}`
-    }
-}
+// let docs: HasFormatter[] = [];
+// docs.push(docOne)
+// docs.push(docTwo)
+// console.log(docs)
 
 
 let InvoiceArr:InvoiceItem[] = []; //only objects created using the invoice constructor can be used in the array
@@ -30,9 +22,19 @@ const type = document.getElementById('type') as HTMLInputElement;
 const tofrom = document.getElementById('tofrom') as HTMLInputElement;
 const details = document.getElementById('details') as HTMLInputElement;
 const amount = document.getElementById('amount') as HTMLInputElement;
+const ul = document.getElementsByClassName('item-list')[0] as HTMLUListElement;
+const List = new ListTemplate(ul);
 
 form.addEventListener('submit', (e:Event) => {
     e.preventDefault(); //to stop the form refreshing
-    InvoiceArr.push(new InvoiceItem(tofrom.value, details.value, amount.valueAsNumber))
+    let doc: HasFormatter;
+    if (type.value == 'invoice') {
+        doc = new InvoiceItem(tofrom.value, details.value, amount.valueAsNumber)
+        let position = 'start'
+    } else {
+        doc = new PaymentItem(tofrom.value, details.value, amount.valueAsNumber)
+        let position = 'end'
+    }
     
+    List.render(doc,type.value,'end')
 })
